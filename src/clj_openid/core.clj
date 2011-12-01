@@ -1,5 +1,5 @@
 ;;
-;; clj-openid - clojure wrapper for OpenID4Java (http://code.google.com/p/openid4java)
+;; clj-openid - Clojure wrapper for OpenID4Java (http://code.google.com/p/openid4java)
 ;;
 ;; Copyright (C) 2011 Steve Lindsay
 ;;
@@ -12,9 +12,6 @@
             [org.openid4java.message ParameterList])
   (:require [ring.util.response :as resp]))
 
-(def google-identifier "https://www.google.com/accounts/o8/id")
-(def yahoo-identifier "https://me.yahoo.com")
-
 (defn- auth-request
   [identifier return-url]
   (let [cm              (ConsumerManager.)
@@ -26,17 +23,11 @@
      :discovery-info discovery-info
      :destination-url destination-url}))
 
-(def google-request (partial auth-request google-identifier))
-(def yahoo-request (partial auth-request yahoo-identifier))
-
 (defn redirect
   [identifier session return-url]
   (let [req  (auth-request identifier return-url)]
     (assoc (resp/redirect (:destination-url req)) 
               :session (merge session {:openid-req req}))))
-
-(def google-redirect (partial redirect google-identifier))
-(def yahoo-redirect (partial redirect yahoo-identifier))
 
 (defn rebuild-request-url
   [{:keys [uri server-port scheme query-string server-name] :as req}]
@@ -58,5 +49,4 @@
     (.getVerifiedId verification)))
     
         
-
 

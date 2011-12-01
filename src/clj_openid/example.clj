@@ -1,8 +1,12 @@
 (ns clj-openid.example
   (:use compojure.core hiccup.core hiccup.form-helpers hiccup.page-helpers)
   (:require [ring.util.response :as resp]
+            [compojure.route :as route]
             [compojure.handler :as handler]
-            [clj-openid.core :as openid]))
+            [clj-openid.core :as openid]
+            [clj-openid.helpers :as helpers]))
+
+(def callback-url "http://localhost:3000/resp")
 
 (defn show-response
   [params]
@@ -15,31 +19,30 @@
        [:tr
         [:td "Claimed ID : "] [:td claimed-id]]]
       [:div (link-to "../.." "Back")])))      
+
+(defn demo-page []
+  (html
+    [:div#login-box
+     [:p "Test with your..."]
+     [:div (link-to "/google" "Google account")]
+     [:div (link-to "/yahoo" "Yahoo account")]
+     [:div "or enter a valid OpenID url"]
+     [:div (form-to [:post "/urllogin"] 
+                    (text-field "openid-url" "<OpenID URL>")
+                    (submit-button "Login"))]]))
   
 (defroutes the-routes
-  (GET "/foo" [:as r] (println r) "hello")
-  (GET "/" _        
-       (html
-         [:div (link-to "google/test" "Google")]
-         [:div (link-to "yahoo/test" 
-                        [:img {:src "http://l.yimg.com/a/i/reg/openid/buttons/1_new.png"}])]
-         [:div (form-to [:post "/urllogin"]
-                        (text-field "openid_url" "<OpenID URL>")
-                        (submit-button "Login"))]))           
-  (GET "/google/test" [session] 
-       (openid/google-redirect session "http://localhost:3000/resp"))
-  (GET "/yahoo/test" [session] 
-       (openid/yahoo-redirect session "http://localhost:3000/resp"))
+  (GET "/" _ (demo-page))
+  (GET "/google" [session] (helpers/google-redirect session callback-url))
+  (GET "/yahoo" [session] (helpers/yahoo-redirect session callback-url))
   (GET "/resp" [:as r]        
        (if (openid/validate r)
          (show-response (:params r))
          (html [:p "Invalid request"])))
-  (POST "/urllogin" {p :params s :session} 
-        (openid/redirect (:openid_url p) "http://localhost:3000/resp")))
+  (POST "/urllogin" [session openid-url] (openid/redirect openid-url session callback-url))
+  (route/resources "/"))
 
 (def app
   (handler/site the-routes))
-
-
 
 

@@ -2,7 +2,9 @@
 
 Clojure OpenID library, based on openid4java.
 
-Work in progress, only a subset of features have been wrapped.
+Work in progress, only a subset of features have been wrapped. I know
+very little about OpenID so if you have some expertise and would like 
+to help out please get in touch.
 
 ## Usage
 
