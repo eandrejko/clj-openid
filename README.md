@@ -8,7 +8,14 @@ to help out please get in touch.
 
 ## Usage
 
-See example.clj
+Add
+
+```clojure
+[clj-open-id "0.1.0"]
+```
+to your `project.clj`.
+
+A full usage example inside of a [compojure](https://github.com/weavejester/compojure)/[hiccup](https://github.com/weavejester/hiccup) web application can be found in `example.clj`.
 
 ## License
 
