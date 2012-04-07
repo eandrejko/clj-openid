@@ -1,5 +1,5 @@
-(defproject org.pretendcow/clj-openid "0.0.1-SNAPSHOT"
-  :description "FIXME: write description"
+(defproject clj-openid "0.1.0"
+  :description "A Clojure wrapper of openid4java for openId authentication"
   :dependencies [[org.clojure/clojure "1.3.0"]
                  [org.openid4java/openid4java "0.9.5"]]
   :dev-dependencies [[compojure "0.6.5"]
